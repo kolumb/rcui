@@ -13,7 +13,7 @@ fn main() {
         |origin, event| {
             match event {
                 Event::KeyStroke(key) => {
-                    if *key as u8 as char == 'q' {
+                    if *key == Some(pancurses::Input::Character('q')) {
                         rcui::quit();
                     }
                 }

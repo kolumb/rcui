@@ -77,7 +77,8 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
                         style::REGULAR_PAIR
                     };
 
-                    attron(COLOR_PAIR(color_pair));
+                    let window = initscr();
+                    window.attron(COLOR_PAIR(color_pair as u64));
                     // TODO(#17): ItemList should extend cursor to the whole available width
                     text.render(&Rect {
                         x: rect.x,
@@ -85,7 +86,7 @@ impl<T: ToString + Clone> Widget for ItemList<T> {
                         w: rect.w,
                         h: 1.0,
                     }, active);
-                    attroff(COLOR_PAIR(color_pair));
+                    window.attroff(COLOR_PAIR(color_pair as u64));
                 }
             }
         }

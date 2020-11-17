@@ -1,4 +1,4 @@
-use ncurses::*;
+use pancurses::*;
 
 pub const REGULAR_PAIR: i16 = 1;
 pub const CURSOR_PAIR: i16 = 2;

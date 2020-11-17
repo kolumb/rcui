@@ -3,10 +3,10 @@ use rcui::*;
 fn main() {
     rcui::exec(Proxy::wrap(
         |list, event| match event {
-            Event::KeyStroke(key) => match *key as u8 as char {
-                'q' => rcui::quit(),
-                'j' => list.down(),
-                'k' => list.up(),
+            Event::KeyStroke(key) => match *key {
+                Some(pancurses::Input::Character('q')) => rcui::quit(),
+                Some(pancurses::Input::Character('j')) => list.down(),
+                Some(pancurses::Input::Character('k')) => list.up(),
                 _ => {}
             }
 

@@ -8,8 +8,7 @@ mod column;
 mod group;
 mod dummy;
 
-use ncurses::CURSOR_VISIBILITY::*;
-use ncurses::*;
+use pancurses::*;
 use std::panic::{set_hook, take_hook};
 use std::collections::VecDeque;
 
@@ -31,7 +30,7 @@ pub struct Rect {
 
 pub enum Event {
     Quit,
-    KeyStroke(i32),
+    KeyStroke(Option<::pancurses::Input>),
     Message(String),
 }
 
@@ -42,9 +41,9 @@ pub trait Widget {
 }
 
 pub fn screen_rect() -> Rect {
-    let mut w: i32 = 0;
-    let mut h: i32 = 0;
-    getmaxyx(stdscr(), &mut h, &mut w);
+    let window = initscr();
+    let w: i32 = window.get_max_x();
+    let h: i32 = window.get_max_y();
     Rect {
         x: 0.0,
         y: 0.0,
@@ -78,7 +77,7 @@ pub fn exec(mut ui: Box<dyn Widget>) {
     init_pair(style::CURSOR_PAIR, COLOR_BLACK, COLOR_WHITE);
     init_pair(style::INACTIVE_CURSOR_PAIR, COLOR_BLACK, COLOR_CYAN);
 
-    curs_set(CURSOR_INVISIBLE);
+    curs_set(0);
 
     set_hook(Box::new({
         let default_hook = take_hook();
@@ -90,10 +89,11 @@ pub fn exec(mut ui: Box<dyn Widget>) {
 
     let queue = unsafe { EVENT_QUEUE.as_mut().unwrap() };
     let mut quit = false;
+    let window = initscr();
     while !quit {
-        erase();
+        window.erase();
         ui.render(&screen_rect(), true);
-        let key = getch();
+        let key = window.getch();
         queue.push_back(Event::KeyStroke(key));
         while !queue.is_empty() {
             queue.pop_front().map(|event| match event {

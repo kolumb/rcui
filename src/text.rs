@@ -45,38 +45,39 @@ impl Widget for Text {
         // TODO(#3): Text does not support wrapping around
         let free_vspace = rect.h - 1.0;
 
+        let window = initscr();
         match self.valign {
             VAlign::Top => {
-                mv(rect.y as i32, rect.x as i32);
+                window.mv(rect.y as i32, rect.x as i32);
             }
             VAlign::Centre => {
-                mv((rect.y + free_vspace * 0.5).floor() as i32, rect.x as i32);
+                window.mv((rect.y + free_vspace * 0.5).floor() as i32, rect.x as i32);
             }
             VAlign::Bottom => {
-                mv((rect.y + free_vspace).floor() as i32, rect.x as i32);
+                window.mv((rect.y + free_vspace).floor() as i32, rect.x as i32);
             }
         }
 
         match self.halign {
             HAlign::Left => {
-                addstr(s);
+                window.addstr(s);
             }
             HAlign::Centre => {
                 let padding = (free_hspace * 0.5).floor() as usize;
                 for _ in 0..padding {
-                    addstr(" ");
+                    window.addstr(" ");
                 }
-                addstr(s);
+                window.addstr(s);
                 for _ in 0..padding {
-                    addstr(" ");
+                    window.addstr(" ");
                 }
             }
             HAlign::Right => {
                 let padding = free_hspace.floor() as usize;
                 for _ in 0..padding {
-                    addstr(" ");
+                    window.addstr(" ");
                 }
-                addstr(s);
+                window.addstr(s);
             }
         }
     }

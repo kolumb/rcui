@@ -3,9 +3,9 @@ use rcui::*;
 fn item_list_controls<T: ToString + Clone>(item_list: ItemList<T>) -> Box<Proxy<ItemList<T>>> {
     Proxy::wrap(
         |list, event| match event {
-            Event::KeyStroke(key) => match *key as u8 as char {
-                'j' => list.down(),
-                'k' => list.up(),
+            Event::KeyStroke(key) => match *key {
+                Some(pancurses::Input::Character('j')) => list.down(),
+                Some(pancurses::Input::Character('k')) => list.up(),
                 _ => {}
             }
 
@@ -21,9 +21,9 @@ fn main() {
     rcui::exec(
         Proxy::wrap(
             |hbox, event| match event {
-                Event::KeyStroke(key) => match *key as u8 as char {
-                    'q' => rcui::quit(),
-                    '\t' => hbox.focus_next(),
+                Event::KeyStroke(key) => match *key {
+                    Some(pancurses::Input::Character('q')) => rcui::quit(),
+                    Some(pancurses::Input::Character('\t')) => hbox.focus_next(),
                     _ => hbox.handle_event(event),
                 }
 

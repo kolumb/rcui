@@ -3,10 +3,10 @@ use rcui::*;
 fn item_list_controls(item_list: ItemList<String>) -> Box<Proxy<ItemList<String>>> {
     Proxy::wrap(
         |list, event| match event {
-            Event::KeyStroke(key) => match *key as u8 as char {
-                'j' => list.down(),
-                'k' => list.up(),
-                '\n' => {
+            Event::KeyStroke(key) => match *key {
+                Some(pancurses::Input::Character('j')) => list.down(),
+                Some(pancurses::Input::Character('k')) => list.up(),
+                Some(pancurses::Input::Character('\n')) => {
                     let item = list.remove();
                     rcui::push_event(Event::Message(item));
                 },
@@ -28,9 +28,9 @@ fn main() {
     rcui::exec(
         Proxy::wrap(
             |row, event| match event {
-                Event::KeyStroke(key) => match *key as u8 as char {
-                    'q'  => rcui::quit(),
-                    '\t' => row.focus_next(),
+                Event::KeyStroke(key) => match *key {
+                    Some(pancurses::Input::Character('q'))  => rcui::quit(),
+                    Some(pancurses::Input::Character('\t')) => row.focus_next(),
                     _    => row.handle_event(event),
                 }
 
